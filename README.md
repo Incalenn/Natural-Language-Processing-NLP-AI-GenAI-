@@ -331,8 +331,3 @@ Similarity Score: 0.861
 
 ---
 
-## Instructions to Run the Project
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/allocine-sentiment-analysis.git
