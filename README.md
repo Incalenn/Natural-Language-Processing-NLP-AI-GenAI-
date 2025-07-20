@@ -1,6 +1,6 @@
 # Sentiment Analysis on Allociné Movie Reviews
 
-**Exam - Session 15 | DataScientest**  
+**Natural Language Processing (NLP) AI & GenAI**  
 This project is a practical application of text classification using Natural Language Processing (NLP) techniques on French-language movie reviews scraped from Allociné. The goal is to automatically classify movie reviews as positive or negative and explore text features using visualization, entity recognition, and similarity-based classification.
 
 ---
