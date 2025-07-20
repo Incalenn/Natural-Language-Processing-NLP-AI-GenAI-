@@ -30,6 +30,9 @@ df = pd.read_csv("allocine_train.csv")
 df = df[['review', 'polarity']]
 df.head(10)
 ```
+**Output:**
+
+![image1](image1.png)
 
 #### Polarity Distribution
 
@@ -61,7 +64,7 @@ plt.show()
 ```
 **Output:**
 
-![image1](image1.png)
+![image1](image2.png)
 ---
 
 ### 2. Word Clouds
@@ -85,34 +88,103 @@ sample_df['cleaned_review'] = sample_df['review'].apply(lambda x: cleaning(str(x
 #### Word Clouds for Positive and Negative Reviews
 
 ```python
+# Importing libraries
 from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
+# Splitting texts in positives and negatives
 text_pos = " ".join(sample_df[sample_df['polarity'] == 1]['cleaned_review'])
 text_neg = " ".join(sample_df[sample_df['polarity'] == 0]['cleaned_review'])
 
-wc_pos = WordCloud(background_color="white").generate(text_pos)
-wc_neg = WordCloud(background_color="white").generate(text_neg)
+# Create the wordcloud
+wc_pos = WordCloud(background_color="white", 
+                   max_words=100, 
+                   width=500, 
+                   height=300, 
+                   random_state=42).generate(text_pos)
+
+wc_neg = WordCloud(background_color="white", 
+                   max_words=100, 
+                   width=500, 
+                   height=300, 
+                   random_state=42).generate(text_neg)
+
+# Display the wordcloud
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+axes[0].imshow(wc_neg)
+axes[0].set_title("Commentaires négatifs")
+axes[0].axis("off")
+
+axes[1].imshow(wc_pos)
+axes[1].set_title("Commentaires positifs")
+axes[1].axis("off")
+
+plt.tight_layout()
+plt.show()
 ```
+**Output:**
+
+![image1](image3.png)
 
 #### Removing Common Words for Better Contrast
 
 ```python
-from collections import Counter
+# to create a contrast in between both wordclouds, I thought about removing common words from both.
 
+# Importing libraries
+from collections import Counter
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+# Splitting positive and negative texts
+text_pos = " ".join(sample_df[sample_df['polarity'] == 1]['cleaned_review'])
+text_neg = " ".join(sample_df[sample_df['polarity'] == 0]['cleaned_review'])
+
+# I count words in each categories
 words_pos = text_pos.split()
 words_neg = text_neg.split()
 
 count_pos = Counter(words_pos)
 count_neg = Counter(words_neg)
 
+# Fetching common words appearing atleast 10 times
 common_words = set([word for word in count_pos if word in count_neg and count_pos[word] + count_neg[word] > 10])
 
+# Deleting those from texts
 text_pos_filtered = " ".join([w for w in words_pos if w not in common_words])
 text_neg_filtered = " ".join([w for w in words_neg if w not in common_words])
 
-wc_pos_filtered = WordCloud(background_color="white").generate(text_pos_filtered)
-wc_neg_filtered = WordCloud(background_color="white").generate(text_neg_filtered)
+# Creating wordclouds
+wc_pos = WordCloud(background_color="white", 
+                   max_words=100, 
+                   width=500, 
+                   height=300, 
+                   random_state=42).generate(text_pos_filtered)
+
+wc_neg = WordCloud(background_color="white", 
+                   max_words=100, 
+                   width=500, 
+                   height=300, 
+                   random_state=42).generate(text_neg_filtered)
+
+# Display filtered wordclouds
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+axes[0].imshow(wc_neg)
+axes[0].set_title("Commentaires négatifs (filtrés)")
+axes[0].axis("off")
+
+axes[1].imshow(wc_pos)
+axes[1].set_title("Commentaires positifs (filtrés)")
+axes[1].axis("off")
+
+plt.tight_layout()
+plt.show()
 ```
+**Output:**
+
+![image1](image4.png)
 
 ---
 
@@ -121,6 +193,11 @@ wc_neg_filtered = WordCloud(background_color="white").generate(text_neg_filtered
 #### Count Person Entities in Each Review
 
 ```python
+import spacy
+
+nlp = spacy.load("fr_core_news_lg")
+
+# Function to count PER entities
 def count_pers(text):
     doc = nlp(text)
     return len([ent for ent in doc.ents if ent.label_ == "PER"])
@@ -133,12 +210,13 @@ sample_df['pers'] = sample_df['review'].apply(lambda x: count_pers(str(x)))
 ```python
 entities = []
 
+# Going through the 5 first lines of the dataframe & fetch every named entities
 for text in sample_df['review'].head(100):
     doc = nlp(text)
     entities.extend([ent.text for ent in doc.ents])
     if len(entities) >= 5:
         break
-
+# Printing the 5 first named entities
 print(entities[:5])
 ```
 
@@ -151,6 +229,10 @@ print(entities[:5])
 #### Violin Plot: Person Entities by Polarity
 
 ```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Violin graph : amount of entities 'pers' based on the polarity
 plt.figure(figsize=(10, 6))
 sns.violinplot(x='polarity', y='pers', data=sample_df)
 plt.title("Distribution of Named Person Entities by Polarity")
@@ -158,7 +240,9 @@ plt.xlabel("Polarity (0 = Negative, 1 = Positive)")
 plt.ylabel("Count of Person Entities")
 plt.show()
 ```
+**Output :**
 
+![image1](image5.png)
 **Observation:** The number of named persons (`PER`) is not significantly different between positive and negative reviews.
 
 ---
