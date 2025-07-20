@@ -22,6 +22,7 @@ This project is a practical application of text classification using Natural Lan
 ### 1. Data Exploration
 
 #### Load Dataset
+(a) I import the dataset allocine_train.csv and keep only the columns review and polarity. Then, I display the first 10 rows.
 
 ```python
 import pandas as pd
@@ -35,7 +36,7 @@ df.head(10)
 ![image1](image1.png)
 
 #### Polarity Distribution
-
+(b) I display the distribution of the target variable, polarity.
 ```python
 df['polarity'].value_counts()
 ```
@@ -48,7 +49,7 @@ df['polarity'].value_counts()
 ```
 
 #### Review Length by Polarity
-
+(c) I add a column length with the length of each review. Then, I display the distribution of this variable according to the polarity.
 ```python
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -68,8 +69,7 @@ plt.show()
 ---
 
 ### 2. Word Clouds
-
-#### Text Cleaning Using spaCy
+(d) I create a cleaning function using the spaCy model fr_core_news_lg to convert text to lowercase, remove punctuation and stopwords, then I apply it to the dataset.
 
 ```python
 import spacy
@@ -86,6 +86,8 @@ sample_df['cleaned_review'] = sample_df['review'].apply(lambda x: cleaning(str(x
 ```
 
 #### Word Clouds for Positive and Negative Reviews
+(e) I display two word clouds: one for positive reviews and one for negative reviews.
+#### Text Cleaning Using spaCy
 
 ```python
 # Importing libraries
@@ -128,6 +130,7 @@ plt.show()
 ![image1](image3.png)
 
 #### Removing Common Words for Better Contrast
+(f) I propose and apply one or more solutions to better differentiate the two word clouds. For example, I remove words common to both categories.
 
 ```python
 # to create a contrast in between both wordclouds, I thought about removing common words from both.
@@ -189,7 +192,7 @@ plt.show()
 ---
 
 ### 3. Named Entity Recognition (NER)
-
+(g) I add a column pers to the dataset containing the number of entities labeled as PERS found in each review.
 #### Count Person Entities in Each Review
 
 ```python
@@ -206,7 +209,7 @@ sample_df['pers'] = sample_df['review'].apply(lambda x: count_pers(str(x)))
 ```
 
 #### Example Extracted Entities
-
+(h) I display five named entities extracted from the reviews.
 ```python
 entities = []
 
@@ -227,7 +230,7 @@ print(entities[:5])
 ```
 
 #### Violin Plot: Person Entities by Polarity
-
+(i) I display a violin plot showing the density of named persons (pers) for each polarity. Then, I interpret what can be concluded.
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -248,7 +251,7 @@ plt.show()
 ---
 
 ### 4. Classification via Text Similarity (spaCy)
-
+(j) I propose a solution to classify reviews according to their polarity using the similarity method provided by spaCy. I display the accuracy score obtained.
 #### Reference Sentences
 
 ```python
@@ -279,7 +282,7 @@ Accuracy with spaCy similarity: 0.612
 ```
 
 #### Most Similar Positive Review
-
+(k) I display the positive review that is most similar to our example phrase. I conclude on the effectiveness of our approach.
 ```python
 similarities = sample_df['review'].apply(lambda x: nlp(x).similarity(doc_pos))
 idx_most_similar = similarities.idxmax()
