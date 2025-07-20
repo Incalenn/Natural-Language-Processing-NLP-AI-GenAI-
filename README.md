@@ -61,7 +61,7 @@ plt.show()
 ```
 **Output:**
 
-![image1](images/image1.png)
+![image1](image1.png)
 ---
 
 ### 2. Word Clouds
